@@ -1,7 +1,8 @@
 .DS_Store
 npm-debug.log
 node_modules
-*.js
+# *.js
 *.map
-dist/
+dist/test
+# !dist/src
 dist_tests/
