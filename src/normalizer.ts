@@ -4,7 +4,11 @@ import { JSONSchema, NormalizedJSONSchema } from './types/JSONSchema'
 import { justName, log, mapDeep, toSafeString } from './utils'
 import stringify = require('json-stringify-safe')
 
-type Rule = (schema: JSONSchema, rootSchema: JSONSchema, fileName?: string) => JSONSchema
+type Rule = (
+  schema: JSONSchema,
+  rootSchema: JSONSchema,
+  fileName?: string
+) => JSONSchema
 const rules = new Map<string, Rule>()
 
 rules.set('Destructure unary types', schema => {
@@ -14,23 +18,38 @@ rules.set('Destructure unary types', schema => {
   return schema
 })
 
-rules.set('Add empty `required` property if none is defined', (schema, rootSchema) => {
-  if (stringify(schema) === stringify(rootSchema) && !('required' in schema)) {
-    schema.required = []
+rules.set(
+  'Add empty `required` property if none is defined',
+  (schema, rootSchema) => {
+    if (
+      stringify(schema) === stringify(rootSchema) &&
+      !('required' in schema)
+    ) {
+      schema.required = []
+    }
+    return schema
   }
-  return schema
-})
+)
 
-rules.set('Transform `required`=false to `required`=[]', (schema, rootSchema) => {
-  if (stringify(schema) === stringify(rootSchema) && schema.required === false) {
-    schema.required = []
+rules.set(
+  'Transform `required`=false to `required`=[]',
+  (schema, rootSchema) => {
+    if (
+      stringify(schema) === stringify(rootSchema) &&
+      (schema as any).required === false
+    ) {
+      schema.required = []
+    }
+    return schema
   }
-  return schema
-})
+)
 
 // TODO: default to empty schema (as per spec) instead
 rules.set('Default additionalProperties to true', (schema, rootSchema) => {
-  if (stringify(schema) === stringify(rootSchema) && !('additionalProperties' in schema)) {
+  if (
+    stringify(schema) === stringify(rootSchema) &&
+    !('additionalProperties' in schema)
+  ) {
     schema.additionalProperties = true
   }
   return schema
@@ -43,10 +62,15 @@ rules.set('Default top level `id`', (schema, rootSchema, fileName) => {
   return schema
 })
 
-export function normalize(schema: JSONSchema, filename?: string): NormalizedJSONSchema {
+export function normalize(
+  schema: JSONSchema,
+  filename?: string
+): NormalizedJSONSchema {
   let _schema = cloneDeep(schema) as NormalizedJSONSchema
   rules.forEach((rule, key) => {
-    _schema = mapDeep(_schema, schema => rule(schema, _schema, filename)) as NormalizedJSONSchema
+    _schema = mapDeep(_schema, schema =>
+      rule(schema, _schema, filename)
+    ) as NormalizedJSONSchema
     log(whiteBright.bgYellow('normalizer'), `Applied rule: "${key}"`)
   })
   return _schema

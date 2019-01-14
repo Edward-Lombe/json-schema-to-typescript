@@ -1,11 +1,26 @@
-import { JSONSchema4 } from 'json-schema'
+import { JSONSchema6 } from 'json-schema'
 
-export type SCHEMA_TYPE = 'ALL_OF' | 'UNNAMED_SCHEMA' | 'ANY' | 'ANY_OF'
-  | 'BOOLEAN' | 'NAMED_ENUM' | 'NAMED_SCHEMA' | 'NULL' | 'NUMBER' | 'STRING'
-  | 'OBJECT' | 'ONE_OF' | 'TYPED_ARRAY' | 'REFERENCE' | 'UNION' | 'UNNAMED_ENUM'
-  | 'UNTYPED_ARRAY' | 'CUSTOM_TYPE'
+export type SCHEMA_TYPE =
+  | 'ALL_OF'
+  | 'UNNAMED_SCHEMA'
+  | 'ANY'
+  | 'ANY_OF'
+  | 'BOOLEAN'
+  | 'NAMED_ENUM'
+  | 'NAMED_SCHEMA'
+  | 'NULL'
+  | 'NUMBER'
+  | 'STRING'
+  | 'OBJECT'
+  | 'ONE_OF'
+  | 'TYPED_ARRAY'
+  | 'REFERENCE'
+  | 'UNION'
+  | 'UNNAMED_ENUM'
+  | 'UNTYPED_ARRAY'
+  | 'CUSTOM_TYPE'
 
-export interface JSONSchema extends JSONSchema4 {
+export interface JSONSchema extends JSONSchema6 {
   /**
    * schema extension to support numeric enums
    */
@@ -14,6 +29,7 @@ export interface JSONSchema extends JSONSchema4 {
    * schema extension to support custom types
    */
   tsType?: string
+  id?: string
 }
 
 // const SCHEMA_PROPERTIES = [
@@ -61,6 +77,7 @@ export interface SchemaSchema extends NormalizedJSONSchema {
   properties: {
     [k: string]: NormalizedJSONSchema
   }
+  extends?: any
   required: string[]
 }
 

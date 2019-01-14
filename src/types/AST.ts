@@ -1,4 +1,4 @@
-import { JSONSchema4Type } from 'json-schema'
+import { JSONSchema6Type } from 'json-schema'
 
 export type AST_TYPE = AST['type']
 
@@ -78,7 +78,7 @@ export interface TIntersection extends AbstractAST {
 }
 
 export interface TLiteral extends AbstractAST {
-  params: JSONSchema4Type
+  params: JSONSchema6Type
   type: 'LITERAL'
 }
 

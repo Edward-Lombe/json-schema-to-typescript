@@ -5,8 +5,7 @@
 // TypeScript Version: 2.1
 
 declare module 'json-schema-ref-parser' {
-
-  import { JSONSchema4, JSONSchema4Type } from 'json-schema'
+  import { JSONSchema6, JSONSchema6Type } from 'json-schema'
 
   export = $RefParser
 
@@ -18,13 +17,12 @@ declare module 'json-schema-ref-parser' {
    * See https://github.com/BigstickCarpet/json-schema-ref-parser/blob/master/docs/ref-parser.md
    */
   class $RefParser {
-
     /**
      * The `schema` property is the parsed/bundled/dereferenced JSON Schema object. This is the same value that is passed to the callback function (or Promise) when calling the parse, bundle, or dereference methods.
      *
      * See https://github.com/BigstickCarpet/json-schema-ref-parser/blob/master/docs/ref-parser.md#schema
      */
-    schema: JSONSchema4
+    schema: JSONSchema6
 
     /**
      * The $refs property is a `$Refs` object, which lets you access all of the externally-referenced files in the schema, as well as easily get and set specific values in the schema using JSON pointers.
@@ -46,9 +44,22 @@ declare module 'json-schema-ref-parser' {
      * @param options (optional)
      * @param callback (optional) A callback that will receive the dereferenced schema object
      */
-    dereference(path: string, schema: string | JSONSchema4, options?: Options, callback?: (err: Error | null, schema: JSONSchema4 | null) => any): Promise<JSONSchema4>
-    dereference(path: string, options?: Options, callback?: (err: Error | null, schema: JSONSchema4 | null) => any): Promise<JSONSchema4>
-    dereference(schema: JSONSchema4, options?: Options, callback?: (err: Error | null, schema: JSONSchema4 | null) => any): Promise<JSONSchema4>
+    dereference(
+      path: string,
+      schema: string | JSONSchema6,
+      options?: Options,
+      callback?: (err: Error | null, schema: JSONSchema6 | null) => any
+    ): Promise<JSONSchema6>
+    dereference(
+      path: string,
+      options?: Options,
+      callback?: (err: Error | null, schema: JSONSchema6 | null) => any
+    ): Promise<JSONSchema6>
+    dereference(
+      schema: JSONSchema6,
+      options?: Options,
+      callback?: (err: Error | null, schema: JSONSchema6 | null) => any
+    ): Promise<JSONSchema6>
 
     /**
      * Bundles all referenced files/URLs into a single schema that only has internal `$ref` pointers. This lets you split-up your schema however you want while you're building it, but easily combine all those files together when it's time to package or distribute the schema to other people. The resulting schema size will be small, since it will still contain internal JSON references rather than being fully-dereferenced.
@@ -62,10 +73,10 @@ declare module 'json-schema-ref-parser' {
      * @param callback (optional) A callback that will receive the bundled schema object
      */
     bundle(
-      schema: string | JSONSchema4,
+      schema: string | JSONSchema6,
       options?: Options,
-      callback?: (err: Error | null, schema: JSONSchema4 | null) => any
-    ): Promise<JSONSchema4>
+      callback?: (err: Error | null, schema: JSONSchema6 | null) => any
+    ): Promise<JSONSchema6>
 
     /**
      * *This method is used internally by other methods, such as `bundle` and `dereference`. You probably won't need to call this method yourself.*
@@ -79,10 +90,10 @@ declare module 'json-schema-ref-parser' {
      * @param callback (optional) A callback that will receive the parsed schema object, or an error
      */
     parse(
-      schema: string | JSONSchema4,
+      schema: string | JSONSchema6,
       options?: Options,
-      callback?: (err: Error | null, schema: JSONSchema4 | null) => any
-    ): Promise<JSONSchema4>
+      callback?: (err: Error | null, schema: JSONSchema6 | null) => any
+    ): Promise<JSONSchema6>
 
     /**
      * *This method is used internally by other methods, such as `bundle` and `dereference`. You probably won't need to call this method yourself.*
@@ -96,18 +107,17 @@ declare module 'json-schema-ref-parser' {
      * @param callback (optional) A callback that will receive a `$Refs` object
      */
     resolve(
-      schema: string | JSONSchema4,
+      schema: string | JSONSchema6,
       options?: Options,
       callback?: (err: Error | null, $refs: $Refs | null) => any
     ): Promise<$Refs>
   }
 
-  namespace $RefParser{
+  namespace $RefParser {
     /**
      * See https://github.com/BigstickCarpet/json-schema-ref-parser/blob/master/docs/options.md
      */
     export type Options = object & {
-
       /**
        * The `parse` options determine how different types of files will be parsed.
        *
@@ -125,7 +135,6 @@ declare module 'json-schema-ref-parser' {
        * JSON Schema `$Ref` Parser comes with built-in support for HTTP and HTTPS, as well as support for local files (when running in Node.js). You can configure or disable either of these built-in resolvers. You can also add your own custom resolvers if you want.
        */
       resolve?: {
-
         /**
          * Determines whether external $ref pointers will be resolved. If this option is disabled, then external `$ref` pointers will simply be ignored.
          */
@@ -138,7 +147,6 @@ declare module 'json-schema-ref-parser' {
        * The `dereference` options control how JSON Schema `$Ref` Parser will dereference `$ref` pointers within the JSON schema.
        */
       dereference?: {
-
         /**
          * Determines whether circular `$ref` pointers are handled.
          *
@@ -152,7 +160,6 @@ declare module 'json-schema-ref-parser' {
   }
 
   interface HTTPResolverOptions extends ResolverOptions {
-
     /**
      * You can specify any HTTP headers that should be sent when downloading files. For example, some servers may require you to set the `Accept` or `Referrer` header.
      */
@@ -180,7 +187,6 @@ declare module 'json-schema-ref-parser' {
    * See https://github.com/BigstickCarpet/json-schema-ref-parser/blob/master/docs/plugins/resolvers.md
    */
   interface ResolverOptions {
-
     /**
      * All resolvers have an order property, even the built-in resolvers. If you don't specify an order property, then your resolver will run last. Specifying `order: 1`, like we did in this example, will make your resolver run first. Or you can squeeze your resolver in-between some of the built-in resolvers. For example, `order: 101` would make it run after the file resolver, but before the HTTP resolver. You can see the order of all the built-in resolvers by looking at their source code.
      *
@@ -191,7 +197,12 @@ declare module 'json-schema-ref-parser' {
     /**
      * The `canRead` property tells JSON Schema `$Ref` Parser what kind of files your resolver can read. In this example, we've simply specified a regular expression that matches "mogodb://" URLs, but we could have used a simple boolean, or even a function with custom logic to determine which files to resolve. Here are examples of each approach:
      */
-    canRead: boolean | RegExp | string | string[] | ((file: FileInfo) => boolean)
+    canRead:
+      | boolean
+      | RegExp
+      | string
+      | string[]
+      | ((file: FileInfo) => boolean)
 
     /**
      * This is where the real work of a resolver happens. The `read` method accepts the same file info object as the `canRead` function, but rather than returning a boolean value, the `read` method should return the contents of the file. The file contents should be returned in as raw a form as possible, such as a string or a byte array. Any further parsing or processing should be done by parsers.
@@ -205,7 +216,6 @@ declare module 'json-schema-ref-parser' {
   }
 
   interface ParserOptions {
-
     /**
      * Parsers run in a specific order, relative to other parsers. For example, a parser with `order: 5` will run before a parser with `order: 10`. If a parser is unable to successfully parse a file, then the next parser is tried, until one succeeds or they all fail.
      *
@@ -225,7 +235,12 @@ declare module 'json-schema-ref-parser' {
      *
      * A regular expression can be used to match files by their full path. A string (or array of strings) can be used to match files by their file extension. Or a function can be used to perform more complex matching logic. See the custom parser docs for details.
      */
-    canParse?: boolean | RegExp | string | string[] | ((file: FileInfo) => boolean)
+    canParse?:
+      | boolean
+      | RegExp
+      | string
+      | string[]
+      | ((file: FileInfo) => boolean)
   }
 
   /**
@@ -236,7 +251,6 @@ declare module 'json-schema-ref-parser' {
    * See https://github.com/BigstickCarpet/json-schema-ref-parser/blob/master/docs/plugins/file-info-object.md
    */
   interface FileInfo {
-
     /**
      * The full URL of the file. This could be any type of URL, including "http://", "https://", "file://", "ftp://", "mongodb://", or even a local filesystem path (when running in Node.js).
      */
@@ -284,7 +298,7 @@ declare module 'json-schema-ref-parser' {
      *
      * @param types (optional) Optionally only return values from certain locations ("file", "http", etc.)
      */
-    values(...types: string[]): { [url: string]: JSONSchema4 }
+    values(...types: string[]): { [url: string]: JSONSchema6 }
 
     /**
      * Returns `true` if the given path exists in the schema; otherwise, returns `false`
@@ -302,7 +316,7 @@ declare module 'json-schema-ref-parser' {
      *
      * @param $ref The JSON Reference path, optionally with a JSON Pointer in the hash
      */
-    get($ref: string): JSONSchema4Type
+    get($ref: string): JSONSchema6Type
 
     /**
      * Sets the value at the given path in the schema. If the property, or any of its parents, don't exist, they will be created.
@@ -310,7 +324,6 @@ declare module 'json-schema-ref-parser' {
      * @param $ref The JSON Reference path, optionally with a JSON Pointer in the hash
      * @param value The value to assign. Can be anything (object, string, number, etc.)
      */
-    set($ref: string, value: JSONSchema4Type): void
+    set($ref: string, value: JSONSchema6Type): void
   }
-
 }
